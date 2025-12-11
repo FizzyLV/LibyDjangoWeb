@@ -2,21 +2,15 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
-from django.contrib.auth import get_user_model
-from django.contrib.auth.hashers import check_password
-from rest_framework.authtoken.models import Token
+from account.models import Account 
+from authTokenHandler.models import create_token
 
-
-# Create your views here.
 def register(request):
     return render(request, 'account/register.html')
 
 
 @csrf_exempt
 def token_login(request):
-    """API endpoint: POST JSON {"email": "...", "password": "..."}
-    Returns 200 with {"token": "..."} on success or 400/401 with error message.
-    """
     if request.method != 'POST':
         return JsonResponse({'detail': 'Method not allowed'}, status=405)
 
@@ -30,14 +24,16 @@ def token_login(request):
     if not email or not password:
         return JsonResponse({'detail': 'Email and password required'}, status=400)
 
-    User = get_user_model()
     try:
-        user = User.objects.get(email=email)
-    except User.DoesNotExist:
+        account = Account.objects.get(email=email)  # ✅ Search Account table
+    except Account.DoesNotExist:
         return JsonResponse({'detail': 'Invalid credentials'}, status=401)
 
-    if not user.check_password(password):
+    if account.password != password:  # ✅ Direct string comparison (no hashing)
         return JsonResponse({'detail': 'Invalid credentials'}, status=401)
 
-    token, _ = Token.objects.get_or_create(user=user)
-    return JsonResponse({'token': token.key})
+    token = create_token(account)  # ✅ Pass the account object
+    return JsonResponse({'token': token,
+                         'firstName': account.firstName,
+                         'lastName': account.lastName,
+                        })
