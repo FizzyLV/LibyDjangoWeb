@@ -21,7 +21,7 @@ class AuthToken(models.Model):
     
 
 
-def create_token(Account):
+def createToken(Account):
     token = secrets.token_urlsafe(48)
     tokenRecord = AuthToken.objects.create (
         user=Account,
@@ -30,3 +30,30 @@ def create_token(Account):
     )
 
     return token
+
+
+def revokeToken(token):
+    try:
+        tokenRecord = AuthToken.objects.get(token=token)
+        tokenRecord.delete()
+        return True
+    except AuthToken.DoesNotExist:
+        return False
+    
+def isTokenValid(token):
+    try:
+        tokenRecord = AuthToken.objects.get(token=token)
+        return tokenRecord.is_valid()
+    except AuthToken.DoesNotExist:
+        return False
+    
+
+def getUserByToken(token):
+    try:
+        tokenRecord = AuthToken.objects.get(token=token)
+        if tokenRecord.is_valid():
+            return tokenRecord.user
+        else:
+            return None
+    except AuthToken.DoesNotExist:
+        return None
