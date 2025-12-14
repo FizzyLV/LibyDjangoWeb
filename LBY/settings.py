@@ -33,6 +33,8 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
     'account',
     'News',
+    'daphne',
+    'django_eventstream',
     'authTokenHandler',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -54,6 +56,8 @@ MIDDLEWARE = [
 CORS_ALLOW_ALL_HEADERS = True
 ROOT_URLCONF = 'LBY.urls'
 MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = '/media/'
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -122,3 +126,6 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
+
+''
+ASGI_APPLICATION = "LBY.asgi.application"

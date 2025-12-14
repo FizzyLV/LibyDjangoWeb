@@ -10,22 +10,24 @@
 <body>
    <h1>Latest News:</h1>
 
-   {% if news %}
-       {% for item in news %}
-           <div>
-               <h3>{{ item.author.firstName }} {{ item.author.lastName }}</h3>
-               <h4>{{ item.title }}</h4>
-               <p>{{ item.description }}</p>
-               <p>Published on: {{ item.publishedAt }}</p>
-               {% if item.image %}
-                   <img src="{{ item.image.url }}" style="max-width: 200px; height: auto;">
-               {% endif %}
-           </div>
-           <hr>
-       {% endfor %}
-   {% else %}
-       <p>No news available.</p>
-   {% endif %}
+   <div id="news-list">
+       {% if news %}
+           {% for item in news %}
+               <div data-news-id="{{ item.id }}">
+                   <h3>{{ item.author.firstName }} {{ item.author.lastName }}</h3>
+                   <h4>{{ item.title }}</h4>
+                   <p>{{ item.description }}</p>
+                   <p>Published on: {{ item.publishedAt }}</p>
+                   {% if item.image %}
+                       <img src="{{ item.image.url }}" style="max-width: 200px; height: auto;">
+                   {% endif %}
+               </div>
+               <hr>
+           {% endfor %}
+       {% else %}
+           <p>No news available.</p>
+       {% endif %}
+   </div>
 
    {% if admin %}
        <h2>Add News (Admin Only)</h2>
@@ -37,5 +39,39 @@
             <button type="submit">Add News</button>
         </form>
    {% endif %}
+
+   <script>
+       // Connect to SSE endpoint
+       const eventSource = new EventSource('/events/news');
+       
+       eventSource.addEventListener('new_news', function(e) {
+           const data = JSON.parse(e.data);
+           console.log('New news received:', data);
+           
+           // Add the new news item to the page
+           addNewsItemToPage(data);
+       });
+       
+       function addNewsItemToPage(newsItem) {
+           // Create HTML for the new news item
+           const newsHTML = `
+               <div data-news-id="${newsItem.id}">
+                   <h3>${newsItem.authorName}</h3>
+                   <h4>${newsItem.title}</h4>
+                   <p>${newsItem.description}</p>
+                   <p>Published on: ${new Date(newsItem.publishedAt * 1000).toLocaleString()}</p>
+                   ${newsItem.imageUrl ? `<img src="${newsItem.imageUrl}" style="max-width: 200px; height: auto;">` : ''}
+               </div>
+               <hr>
+           `;
+           
+           // Prepend to news list
+           document.getElementById('news-list').insertAdjacentHTML('afterbegin', newsHTML);
+       }
+       
+       eventSource.onerror = function(e) {
+           console.error('SSE Error:', e);
+       };
+   </script>
 </body>
 </html>
