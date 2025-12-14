@@ -23,7 +23,7 @@ class AuthToken(models.Model):
 
 def createToken(Account):
     token = secrets.token_urlsafe(48)
-    tokenRecord = AuthToken.objects.create (
+    AuthToken.objects.create (
         user=Account,
         token=token,
         expires_at=timezone.now() + timedelta(days=30)
