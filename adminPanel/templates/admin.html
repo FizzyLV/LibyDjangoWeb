@@ -10,6 +10,7 @@
 </head>
 <body>
    <h2>Add News</h2>
+   {% include 'components/navbar.html' %}
        <form method="POST" action="{% url 'add_news' %}" enctype="multipart/form-data">
             {% csrf_token %}
             <label>Title: <input type="text" name="title"></label><br><br>
