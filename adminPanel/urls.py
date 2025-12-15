@@ -6,5 +6,6 @@ from account.decorators import login_required
 urlpatterns = [
     path("adminstrator/denied", views.adminDenied, name="adminDenied"),
     path("adminstrator/", views.admin, name="admin"),
-    path('news/edit/<int:id>/', views.editNews, name='edit_news')
+    path('news/edit/<int:id>/', views.editNews, name='edit_news'),
+    path('api/token/editnews/<int:id>/', views.editNewsToken, name='token_edit_news')
 ]

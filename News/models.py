@@ -7,3 +7,4 @@ class newsItems(models.Model):
     image = models.ImageField(upload_to='news_images/')
     description = models.TextField()
     publishedAt = models.DateTimeField(auto_now_add=True)
+    lastModifiedAt = models.DateTimeField(auto_now=True)

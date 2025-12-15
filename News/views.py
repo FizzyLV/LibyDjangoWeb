@@ -69,27 +69,29 @@ def returnNewsItems(request):
     if not user:
         return JsonResponse({'detail': 'Invalid or expired token'}, status=401)
     
-    # Use 'last-id' instead of 'lastId' for headers (HTTP header convention)
-    last_id = request.headers.get('last-id', '0')
+    # Get lastModified timestamp from headers
+    last_modified = request.headers.get('lastmodified', '0')
     
     try:
-        last_id = int(last_id)
-        if last_id < 0:
-            return JsonResponse({'detail': 'Invalid lastId'}, status=400)
+        last_modified = int(last_modified)
+        if last_modified < 0:
+            return JsonResponse({'detail': 'Invalid lastModified'}, status=400)
     except (ValueError, TypeError):
-        return JsonResponse({'detail': 'Invalid lastId format'}, status=400)
+        return JsonResponse({'detail': 'Invalid lastModified format'}, status=400)
 
-    # DEBUG: Check what's in the database
-    total_count = newsItems.objects.count()
-    max_id = newsItems.objects.aggregate(max_id=Max('id'))['max_id'] or 0
-    print(f"DEBUG: Total news items: {total_count}, Max ID: {max_id}, Last ID received: {last_id}")
+    # Convert timestamp to datetime
+    from datetime import datetime
+    if last_modified > 0:
+        last_modified_dt = datetime.fromtimestamp(last_modified)
+    else:
+        last_modified_dt = datetime.fromtimestamp(0)
 
-    if last_id > max_id:
-        return JsonResponse({'detail': 'lastId exceeds database'}, status=400)
-
-    # Get items
-    items_queryset = newsItems.objects.select_related('author').filter(id__gt=last_id).order_by('id')
-    print(f"DEBUG: Items found with id > {last_id}: {items_queryset.count()}")
+    # Get items that were created or modified after the last modified timestamp
+    items_queryset = newsItems.objects.select_related('author').filter(
+        lastModifiedAt__gt=last_modified_dt
+    ).order_by('lastModifiedAt')
+    
+    print(f"DEBUG: Items found modified after {last_modified_dt}: {items_queryset.count()}")
 
     news_list = []
     for news_item in items_queryset:
@@ -111,6 +113,7 @@ def returnNewsItems(request):
             'authorName': author_name,
             'email': author_email,
             'publishedAt': int(news_item.publishedAt.timestamp()),
+            'lastModifiedAt': int(news_item.lastModifiedAt.timestamp()),
         })
 
     print(f"DEBUG: Returning {len(news_list)} items")
@@ -194,15 +197,6 @@ def addNews(request):
     
     return JsonResponse({
         'detail': 'News added successfully',
-        'newsItem': {
-            'id': news_item.id,
-            'title': news_item.title,
-            'description': news_item.description,
-            'imageUrl': request.build_absolute_uri(news_item.image.url) if news_item.image else None,
-            'authorName': f"{news_item.author.firstName} {news_item.author.lastName}",
-            'email': news_item.author.email,
-            'publishedAt': int(news_item.publishedAt.timestamp())
-        }
     }, status=201)
 
 
