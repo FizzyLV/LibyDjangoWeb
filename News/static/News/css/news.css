@@ -1,0 +1,93 @@
+/* account/css/news.css */
+
+body {
+    background-color: #1b1b1b;
+    font-family: Arial, sans-serif;
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2rem;
+    color: #ffffff;
+}
+
+#news-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Each news item in a gray box */
+#news-list > div {
+    background-color: #4b4a4a; /* gray box */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#news-list > div:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+#news-list h3 {
+    font-size: 1rem;
+    color: #ffffff;
+    margin-bottom: 5px;
+}
+
+#news-list h4 {
+    font-size: 1.3rem;
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+
+#news-list p {
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 5px;
+    color: #ffffff;
+}
+
+#news-list img {
+    max-width: 100%;
+    height: auto;
+    margin-top: 10px;
+    border-radius: 6px;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #ccc;
+    margin: 10px 0 0 0;
+}
+
+@media (max-width: 600px) {
+    .container {
+        margin: 20px;
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 1.6rem;
+    }
+
+    #news-list h4 {
+        font-size: 1.1rem;
+    }
+
+    #news-list p {
+        font-size: 0.95rem;
+    }
+}
