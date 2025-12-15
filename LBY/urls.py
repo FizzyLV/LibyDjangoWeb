@@ -24,6 +24,7 @@ urlpatterns = [
     path('', include('account.urls')),
     path('', include('authTokenHandler.urls')),
     path('', include('News.urls')),
+    path('', include('adminPanel.urls'))
 ]
 
 if settings.DEBUG:

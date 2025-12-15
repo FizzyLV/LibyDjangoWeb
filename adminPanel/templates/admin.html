@@ -5,34 +5,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LBY - News</title>
+    <title>LBY - Admin Panel</title>
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
 </head>
 <body>
-   <h1>Latest News:</h1>
-
-   <div id="news-list">
+   <h2>Add News</h2>
+       <form method="POST" action="{% url 'add_news' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label>Title: <input type="text" name="title"></label><br><br>
+            <label>Description: <textarea name="description"></textarea></label><br><br>
+            <label>Image: <input type="file" name="image"></label><br><br>
+            <button type="submit">Add News</button>
+    </form>
+    <div id="news-list">
        {% if news %}
            {% for item in news %}
-               <div data-news-id="{{ item.id }}">
-                   <h3>{{ item.author.firstName }} {{ item.author.lastName }}</h3>
-                   <h4>{{ item.title }}</h4>
-                   <p>{{ item.description }}</p>
-                   <p>Published on: {{ item.publishedAt }}</p>
-                   {% if item.image %}
-                       <img src="{{ item.image.url }}" style="max-width: 200px; height: auto;">
-                   {% endif %}
-               </div>
-               <hr>
-           {% endfor %}
+                <div data-news-id="{{ item.id }}">
+                    <h3>{{ item.author.firstName }} {{ item.author.lastName }}</h3>
+                    <h4>{{ item.title }}</h4>
+                    <p>{{ item.description }}</p>
+                    <p>Published on: {{ item.publishedAt }}</p>
+                    {% if item.image %}
+                        <img src="{{ item.image.url }}" style="max-width: 200px; height: auto;">
+                    {% endif %}
+
+                    <!-- Delete form -->
+                    <form method="POST" action="{% url 'delete_news' item.id %}">
+                        {% csrf_token %}
+                        <button type="submit">Delete</button>
+                    </form>
+
+                    <!-- Edit button -->
+                        <button type="button">Edit</button>
+                    </a>
+                </div>
+                <hr>
+            {% endfor %}
        {% else %}
            <p>No news available.</p>
        {% endif %}
    </div>
-
-   {% if admin %}
-       <button link="{% url 'admin' %}">Admin panel</button>
-   {% endif %}
-
    <script>
        // Connect to SSE endpoint
        const eventSource = new EventSource('/events/news');

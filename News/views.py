@@ -1,13 +1,13 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from News.models import newsItems
 from authTokenHandler.models import isTokenValid, getUserByToken
 from account.decorators import login_required
+from adminPanel.decorators import admin_required
 from django_eventstream import send_event
 import django_eventstream
 from django.db.models import Max    
-
 @login_required
 def news(request):
     newsObject = newsItems.objects.all() 
@@ -233,3 +233,20 @@ def deleteNewsItem(request, id):
         'message': 'News item deleted successfully',
         'id': id
     }, status=200)
+
+@admin_required
+@login_required
+def deleteNews(request, id):
+    if request.method != 'POST':
+        return JsonResponse({'detail': 'Method not allowed'}, status=405)
+    
+    if not request.session.get('isAdmin', False):
+        return JsonResponse({'detail': 'Admin access required'}, status=403)
+    
+    try:
+        news_item = newsItems.objects.get(id=id)
+    except newsItems.DoesNotExist:
+        return JsonResponse({'detail': 'News item not found'}, status=404)
+    
+    news_item.delete()
+    return redirect('admin')
