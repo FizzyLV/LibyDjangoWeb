@@ -1,0 +1,126 @@
+<style>
+    .navbar {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+    }
+    
+    .navbar-toggle {
+        background-color: #333;
+        color: white;
+        border: none;
+        padding: 12px;
+        cursor: pointer;
+        border-radius: 8px;
+        font-size: 1.5rem;
+        transition: background-color 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 50px;
+        height: 50px;
+    }
+    
+    .navbar-toggle:hover {
+        background-color: #4CAF50;
+    }
+    
+    .navbar-dropdown {
+        position: absolute;
+        top: 60px;
+        right: 0;
+        background-color: #333;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        min-width: 100px;
+        display: none;
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: opacity 0.3s, transform 0.3s;
+    }
+    
+    .navbar-dropdown.active {
+        display: block;
+        opacity: 1;
+        transform: translateY(0);
+    }
+    
+    .navbar-brand {
+        color: white;
+        font-size: 1.2rem;
+        text-decoration: none;
+        font-weight: bold;
+        padding: 1rem;
+        display: block;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        text-align: center;
+    }
+    .navbar-menu {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+    
+    .navbar-menu li {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .navbar-menu li:last-child {
+        border-bottom: none;
+    }
+    
+    .navbar-menu a {
+        color: white;
+        text-decoration: none;
+        padding: 1rem;
+        display: block;
+        transition: background-color 0.3s, color 0.3s;
+        text-align: center;  /* Add this line */
+    }
+    
+    .navbar-menu a:hover {
+        color: #4CAF50;
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .navbar-menu a.active {
+        color: #4CAF50;
+        background-color: rgba(76, 175, 80, 0.2);
+    }
+</style>
+
+<nav class="navbar">
+    <button class="navbar-toggle" onclick="toggleNav()">☰</button>
+    
+    <div class="navbar-dropdown" id="navDropdown">
+        <a href="{% url 'home' %}" class="navbar-brand">{{ NavsiteName }}</a>
+        <ul class="navbar-menu">
+            {% for item in NavItems %}
+                <li>
+                    <a href="{{ item.url }}" 
+                       {% if Navcurrent_path == item.url %}class="active"{% endif %}>
+                        {{ item.label }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</nav>
+
+<script>
+    function toggleNav() {
+        const dropdown = document.getElementById('navDropdown');
+        dropdown.classList.toggle('active');
+    }
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+        const navbar = document.querySelector('.navbar');
+        const dropdown = document.getElementById('navDropdown');
+        
+        if (!navbar.contains(event.target)) {
+            dropdown.classList.remove('active');
+        }
+    });
+</script>

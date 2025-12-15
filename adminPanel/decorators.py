@@ -5,6 +5,6 @@ def admin_required(view_func):
     @wraps(view_func)
     def wrapper(request, *args, **kwargs):
         if not request.session.get('isAdmin'):
-            return redirect('admin/denied')
+            return redirect('adminDenied')
         return view_func(request, *args, **kwargs)
     return wrapper
