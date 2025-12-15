@@ -1,0 +1,26 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LBY - Edit News</title>
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
+</head>
+<body>
+    <h2>Edit News</h2>
+    <form method="POST" action="{% url 'edit_news' news_item.id %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>Title: <input type="text" name="title" value="{{ news_item.title }}"></label><br><br>
+        <label>Description: <textarea name="description">{{ news_item.description }}</textarea></label><br><br>
+        <label>Image: <input type="file" name="image"></label><br><br>
+        {% if news_item.image %}
+            <p>Current Image:</p>
+            <img src="{{ news_item.image.url }}" style="max-width: 200px; height: auto;"><br><br>
+        {% endif %}
+        <button type="submit">Save Changes</button>
+    </form>
+    <a href="{% url 'admin' %}">Back to Admin Panel</a>
+</body>
+</html>

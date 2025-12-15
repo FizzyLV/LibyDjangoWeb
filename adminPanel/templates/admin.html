@@ -35,7 +35,8 @@
                         <button type="submit">Delete</button>
                     </form>
 
-                    <!-- Edit button -->
+                    <a href="{% url 'edit_news' item.id %}">
+                        {% csrf_token %}
                         <button type="button">Edit</button>
                     </a>
                 </div>
