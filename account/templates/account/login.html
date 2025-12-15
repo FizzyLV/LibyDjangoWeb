@@ -10,19 +10,19 @@
     <link rel="stylesheet" href="{% static 'account/css/login.css' %}">
 </head>
 <body>
-   <div class="container">
-        <div class="form-container">
+    <div class="container">
+        <div class="login-box">
             <h1>Login</h1>
             <form method="post">
                 {% csrf_token %}
-                <p>
-                    <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" required>
-                </p>
-                <p>
-                    <label for="password">Password:</label>
-                    <input type="password" id="password" name="password" required>
-                </p>
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
                 <button type="submit">Login</button>
             </form>
             <p>Don't have an account? <a href="{% url 'register' %}">Register here</a></p>
