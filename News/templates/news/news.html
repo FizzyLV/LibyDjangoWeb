@@ -29,17 +29,6 @@
        {% endif %}
    </div>
 
-   {% if admin %}
-       <h2>Add News (Admin Only)</h2>
-       <form method="POST" action="{% url 'add_news' %}" enctype="multipart/form-data">
-            {% csrf_token %}
-            <label>Title: <input type="text" name="title"></label><br><br>
-            <label>Description: <textarea name="description"></textarea></label><br><br>
-            <label>Image: <input type="file" name="image"></label><br><br>
-            <button type="submit">Add News</button>
-        </form>
-   {% endif %}
-
    <script>
        // Connect to SSE endpoint
        const eventSource = new EventSource('/events/news');

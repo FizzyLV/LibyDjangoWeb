@@ -118,16 +118,22 @@ def returnNewsItems(request):
 
 
 @csrf_exempt
-def news_events(request):
-    # Check session auth first (for web)
+def news_events(request, channels=None, **kwargs):
+    # Session auth (web)
     if request.session.get('isAuthenticated'):
-        return django_eventstream.views.events(request, "News")
-    
-    token = request.headers.get('authorization')
+        return django_eventstream.views.events(
+            request,
+            channels=channels
+        )
+
+    # Token auth (mobile / API)
+    token = request.headers.get('Authorization')
     if token and isTokenValid(token):
-        return django_eventstream.views.events(request, "News")
-    
-    # No valid auth
+        return django_eventstream.views.events(
+            request,
+            channels=channels
+        )
+
     return JsonResponse({'detail': 'Unauthorized'}, status=401)
 
 @csrf_exempt
