@@ -32,7 +32,7 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'account',
-    'admin'
+    'adminPanel',
     'News',
     'daphne',
     'django_eventstream',
